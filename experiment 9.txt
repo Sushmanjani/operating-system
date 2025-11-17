@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <string.h>
+
+int main() {
+    int shmid;
+    char *shmPtr;
+
+    // Create shared memory
+    shmid = shmget((key_t)1234, 1024, 0666 | IPC_CREAT);
+    if (shmid == -1) {
+        printf("Shared memory creation failed\n");
+        return 1;
+    }
+
+    // Fork to create child process
+    int pid = fork();
+
+    if (pid > 0) {
+        // ----- Parent Process (Writer) -----
+        shmPtr = (char *)shmat(shmid, NULL, 0);
+        printf("Parent: Enter a message to write into shared memory:\n");
+        
+        char msg[100];
+        fgets(msg, sizeof(msg), stdin);
+
+        strcpy(shmPtr, msg);
+        printf("Parent: Message written to shared memory.\n");
+
+        shmdt(shmPtr);
+    }
+    else {
+        // ----- Child Process (Reader) -----
+        sleep(2); // Wait for parent to write
+
+        shmPtr = (char *)shmat(shmid, NULL, 0);
+        printf("Child: Reading from shared memory...\n");
+        printf("Child: Message = %s\n", shmPtr);
+
+        shmdt(shmPtr);
+
+        // Delete shared memory
+        shmctl(shmid, IPC_RMID, NULL);
+    }
+
+    return 0;
+}
+
+output:
+Parent: Message written to shared memory.

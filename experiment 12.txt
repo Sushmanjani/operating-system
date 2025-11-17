@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+// Thread function 1
+void* task1(void* arg) {
+    printf("Thread 1: Running task 1...\n");
+    sleep(1);
+    printf("Thread 1: Completed\n");
+    return NULL;
+}
+
+// Thread function 2
+void* task2(void* arg) {
+    printf("Thread 2: Running task 2...\n");
+    sleep(2);
+    printf("Thread 2: Completed\n");
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+
+    // Create threads
+    pthread_create(&t1, NULL, task1, NULL);
+    pthread_create(&t2, NULL, task2, NULL);
+
+    // Wait for threads to finish
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Main Thread: All tasks completed.\n");
+
+    return 0;
+}
+
+output:
+Philosopher 2 is thinking...
+Philosopher 3 picked fork 3,,........
