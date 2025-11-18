@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char dir[10][20];   // stores file names
+    int count = 0;      // number of files
+    int choice;
+    char name[20];
+    int i, found;
+
+    printf("\n--- SINGLE LEVEL DIRECTORY ---\n");
+
+    while (1)
+    {
+        printf("\n1. Create File");
+        printf("\n2. Search File");
+        printf("\n3. Display Files");
+        printf("\n4. Exit");
+        printf("\nEnter your choice (1-4): ");
+        scanf("%d", &choice);
+
+        if (choice < 1 || choice > 4)
+        {
+            printf("Please enter a valid option (1–4) only.\n");
+            continue;
+        }
+
+        if (choice == 1)
+        {
+            if (count == 10)
+            {
+                printf("Directory is full! Cannot create more files.\n");
+                continue;
+            }
+
+            printf("Enter file name to create: ");
+            scanf("%s", name);
+
+            // duplicate check
+            found = 0;
+            for (i = 0; i < count; i++)
+            {
+                if (strcmp(name, dir[i]) == 0)
+                {
+                    found = 1;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                printf("File already exists!\n");
+            }
+            else
+            {
+                strcpy(dir[count], name);
+                count++;
+                printf("File created successfully.\n");
+            }
+        }
+
+        else if (choice == 2)
+        {
+            printf("Enter file name to search: ");
+            scanf("%s", name);
+
+            found = 0;
+            for (i = 0; i < count; i++)
+            {
+                if (strcmp(name, dir[i]) == 0)
+                {
+                    found = 1;
+                    break;
+                }
+            }
+
+            if (found)
+                printf("File found.\n");
+            else
+                printf("File not found.\n");
+        }
+
+        else if (choice == 3)
+        {
+            if (count == 0)
+            {
+                printf("Directory is empty.\n");
+            }
+            else
+            {
+                printf("\nFiles in directory:\n");
+                for (i = 0; i < count; i++)
+                {
+                    printf("%s\n", dir[i]);
+                }
+            }
+        }
+
+        else if (choice == 4)
+        {
+            printf("Exiting program.\n");
+            break;
+        }
+    }
+
+    return 0;
+} 
